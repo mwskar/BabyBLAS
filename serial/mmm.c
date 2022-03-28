@@ -1,14 +1,18 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void mmm_( int *len,  double *a, double *b, double*c );
+    void mmm_( int *threads, int *len,  double *a, double *b, double*c );
 #ifdef __cplusplus
     }
 #endif
 
 /*  S E R I A L   C O D E  */
 
-void mmm_( int *len,  double *a, double *b, double *c ){
+void mmm_( int *threads, int *len,  double *a, double *b, double *c ){
+
+/* in serial code, *threads not used. It is retained here so the code can be called
+ * identically to the threaded methods.
+ */
 
     int i, j, k;
     int veclen = *len;
