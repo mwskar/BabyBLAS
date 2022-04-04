@@ -13,12 +13,52 @@ extern "C" {
 
 double dot_(int *threads, int *len, double *vec1, double *vec2)
 {
-    printf("In function\n");
+    
     double sum = 0;
+
+#ifdef STRIDE8
+
+    const int stride = 8;
+    const int mod = *(len) % stride;
+    
+    for (int i=0; i<mod; i++)
+    {
+        sum += ( *(vec1 + i) * *(vec2 + i) );
+    }
+    for (int i = mod; i < *len; i+=stride)
+    {
+        sum += ( *(vec1 + i) * *(vec2 + i) )
+            + ( *(vec1 + (i+1)) * *(vec2 + (i+1)) )
+            + ( *(vec1 + (i+2)) * *(vec2 + (i+2)) )
+            + ( *(vec1 + (i+3)) * *(vec2 + (i+3)) )
+            + ( *(vec1 + (i+4)) * *(vec2 + (i+4)) )
+            + ( *(vec1 + (i+5)) * *(vec2 + (i+5)) )
+            + ( *(vec1 + (i+6)) * *(vec2 + (i+6)) )
+            + ( *(vec1 + (i+7)) * *(vec2 + (i+7)) );
+
+    } 
+#elif STRIDE4
+    const int stride = 4;
+    const int mod = *(len) % stride;
+    
+    for (int i=0; i<mod; i++)
+    {
+        sum += ( *(vec1 + i) * *(vec2 + i) );
+    }
+    for (int i = mod; i < *len; i+=stride)
+    {
+        sum += ( *(vec1 + i) * *(vec2 + i) )
+            + ( *(vec1 + (i+1)) * *(vec2 + (i+1)) )
+            + ( *(vec1 + (i+2)) * *(vec2 + (i+2)) )
+            + ( *(vec1 + (i+3)) * *(vec2 + (i+3)) );
+
+    }       
+#else
     for (int i = 0; i < *len; i++)
     {
         sum = sum + ( *(vec1 + i) * *(vec2 + i) );
-    }
+    }    
+#endif
 
     return (sum);
 }

@@ -31,13 +31,13 @@ void mmm_( int *threads, int *len,  double *a, double *b, double *c ){
             }
             for (k=mod;k<veclen;k+=stride) {
                 *(c+(i*veclen+j)) += *(a+(i*veclen+k  )) * *(b+( k   *veclen+j)) 
-                                   + *(a+(i*veclen+k+1)) * *(b+((k+1)*veclen+j)) 
-                                   + *(a+(i*veclen+k+2)) * *(b+((k+2)*veclen+j)) 
-                                   + *(a+(i*veclen+k+3)) * *(b+((k+3)*veclen+j)) 
-                                   + *(a+(i*veclen+k+4)) * *(b+((k+4)*veclen+j)) 
-                                   + *(a+(i*veclen+k+5)) * *(b+((k+5)*veclen+j)) 
-                                   + *(a+(i*veclen+k+6)) * *(b+((k+6)*veclen+j)) 
-                                   + *(a+(i*veclen+k+7)) * *(b+((k+7)*veclen+j)); 
+                                   + *(a+(i*veclen+(k+1))) * *(b+((k+1)*veclen+j)) 
+                                   + *(a+(i*veclen+(k+2))) * *(b+((k+2)*veclen+j)) 
+                                   + *(a+(i*veclen+(k+3))) * *(b+((k+3)*veclen+j)) 
+                                   + *(a+(i*veclen+(k+4))) * *(b+((k+4)*veclen+j)) 
+                                   + *(a+(i*veclen+(k+5))) * *(b+((k+5)*veclen+j)) 
+                                   + *(a+(i*veclen+(k+6))) * *(b+((k+6)*veclen+j)) 
+                                   + *(a+(i*veclen+(k+7))) * *(b+((k+7)*veclen+j)); 
             }
         }
     }

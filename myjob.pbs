@@ -10,6 +10,4 @@
 cd /home/skarbek_mw/baby_blas
 make all
 
-./driver 1 2000 4000 500
-
-./driver 1 2000 4000 500
+./driver 2000 1

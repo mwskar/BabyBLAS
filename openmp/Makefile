@@ -5,7 +5,7 @@ include ../Makefile.inc
 all: lib
 
 mmm.o : mmm.c
-	$(CC) $(CFLAGS) -fopenmp -c mmm.c
+	$(CC) $(CFLAGS) $(OPM) -c mmm.c
 
 lib: mmm.o 
 	ar -rc libopenmp_bblas.a  mmm.o 
