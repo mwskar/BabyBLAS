@@ -4,11 +4,20 @@ include ../Makefile.inc
 
 all: lib
 
+dot.o: dot.c
+	$(CC) $(CFLAGS) $(OPM) -c dot.c
+
+mvv.o: mvv.c
+	$(CC) $(CFLAGS) $(OPM) -c mvv.c
+
+vvm.o: vvm.c
+	$(CC) $(CFLAGS) $(OPM) -c vvm.c
+
 mmm.o : mmm.c
 	$(CC) $(CFLAGS) $(OPM) -c mmm.c
 
-lib: mmm.o 
-	ar -rc libopenmp_bblas.a  mmm.o 
+lib: dot.o vvm.o mvv.o mmm.o 
+	ar -rc libopenmp_bblas.a dot.o vvm.o mvv.o mmm.o 
 	ranlib libopenmp_bblas.a
 
 # Default Targets for Cleaning up the Environment

@@ -14,7 +14,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    double dot_( int *threads, int *len,  double *a, double *b, double*c );
+    double dot_( int *threads, int *len,  double *a, double *b);
 #ifdef __cplusplus
 }
 #endif
@@ -34,7 +34,8 @@ struct args {
     int stopPos;
     double *Aptr;
     double *Bptr;
-    double *sum;
+    double *sumArr;
+    int thread_number;
 };
 
 double dot_( int *threads, int *len, double *A, double *B){
@@ -50,15 +51,15 @@ double dot_( int *threads, int *len, double *A, double *B){
     pthread_t *thread_id;
     struct args *thread_args;
     double sum = 0.0;
+    double *sumArr;
 
 
     // if there are fewer dimensions than threads, do a simple single-threaded matrix multiplication.
     if ( matrixDimension < numThreads ) {
         for (int i = 0; i < *len; i++)
         {
-            sum = sum + ( *(vec1 + i) * *(vec2 + i) );
+            sum = sum + ( *(A + i) * *(B + i) );
         }
-        return sum;
     }
 
     else { 
@@ -85,20 +86,23 @@ double dot_( int *threads, int *len, double *A, double *B){
             *(numberOfRows+i) = *(numberOfRows+i) + 1;
         }
 
+        sumArr = (double *) malloc (numThreads * sizeof(double));
+
         // Now that we know how many rows each thread will be responsible for computing,
         // malloc memory for the struct data, pack the struct with the thread-specific info
         // on where it is to start and stop processing, and create the thread using this data. 
-        stopPo=0;
+        stopPos=0;
         for(int i=0; i < numThreads ; i++) {
             {   
-                startPos=stopRow;
-                stopPos=startRow+*(numberOfRows+i);
+                startPos=stopPos;
+                stopPos=startPos+*(numberOfRows+i);
                 thread_args = ( struct args * )  malloc(sizeof( struct args));
                 thread_args->startPos = startPos;
                 thread_args->stopPos = stopPos; 
                 thread_args->Aptr = A;
                 thread_args->Bptr = B;
-                thread_args->sum = sum;
+                thread_args->sumArr = sumArr;
+                thread_args->thread_number = i;
 
                 pthread_create( thread_id+i, NULL, &dot_thread_worker, thread_args );
             }
@@ -107,9 +111,18 @@ double dot_( int *threads, int *len, double *A, double *B){
             pthread_join( *(thread_id+i), NULL); 
         }
 
+        for (int i=0; i<numThreads; i++)
+        {
+            sum += *(sumArr+i);
+        }
+
         free(numberOfRows);
         free(thread_id);
     }
+
+
+
+    return(sum);
 
     // END OF MMM -- the memory pointed to by *C should now contain the product A.B
 }
@@ -123,23 +136,26 @@ void *dot_thread_worker( struct args *thread_args  ) {
     // It is worth noting here that while the thread workers are reading simultaneously
     // from *A and *B, they never write to same memory locations in *C.
 
-    int i;
-    double val;
+    int i, number;
+    double tempSum;
     int posStart, posStop, N; 
-    double *A, *B, *sum;
+    double *A, *B, *sumArr;
 
     // Unpack the thread_args struct into normal variables
     posStart =  thread_args->startPos;
     posStop  =  thread_args->stopPos; 
     A        =  thread_args->Aptr;
     B        =  thread_args->Bptr;
-    sum      =  thread_args->sum;
+    sumArr   =  thread_args->sumArr;
+    number   =  thread_args->thread_number;
 
+    tempSum = 0.0;
     // Process the rows for which this thread is responsible
     for (i = posStart; i < posStop; i++)
     {
-        *(sum) = *(sum) + ( *(A + i) * *(B + i) );
+        *(sumArr+number) += ( *(A + i) * *(B + i) );
     }
+
 
     free(thread_args);
     pthread_exit(NULL);

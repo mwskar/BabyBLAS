@@ -16,7 +16,23 @@ void mvv_(int *threads, int *len, double *va, double *vb, double *ma)
 #ifdef STRIDE8
 
     const int stride = 8;
-    const int mod = *(len) % stride;
+    const int mod = length % stride;
+
+    for (i=0; i<mod;i++)
+    {
+        *(vb + i) = 0.0;
+    }
+    for (i=mod; i<length; i+=stride)
+    {
+        *(vb + i) = 0.0;
+        *(vb + (i+1)) = 0.0;
+        *(vb + (i+2)) = 0.0;
+        *(vb + (i+3)) = 0.0;
+        *(vb + (i+4)) = 0.0;
+        *(vb + (i+5)) = 0.0;
+        *(vb + (i+6)) = 0.0;
+        *(vb + (i+7)) = 0.0;
+    }
 
     for (i=0; i<length; i++)
     {
@@ -40,7 +56,19 @@ void mvv_(int *threads, int *len, double *va, double *vb, double *ma)
 
 #elif STRIDE4
     const int stride = 4;
-    const int mod = *(len) % stride;
+    const int mod = length % stride;
+    
+    for (i=0; i<mod;i++)
+    {
+        *(vb + i) = 0.0;
+    }
+    for (i=mod; i<length; i+=stride)
+    {
+        *(vb + i) = 0.0;
+        *(vb + (i+1)) = 0.0;
+        *(vb + (i+2)) = 0.0;
+        *(vb + (i+3)) = 0.0;
+    }
 
     for (i=0; i<length; i++)
     {

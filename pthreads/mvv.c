@@ -45,7 +45,7 @@ void mvv_( int *threads, int *len, double *A, double *B, double *MA ){
 
 
     int numThreads = *threads;
-    int matrixDimension = *len;
+    int length = *len;
     int *numberOfRows;
     int startRow, stopRow;
     pthread_t *thread_id;
@@ -53,8 +53,8 @@ void mvv_( int *threads, int *len, double *A, double *B, double *MA ){
 
 
     // if there are fewer dimensions than threads, do a simple single-threaded matrix multiplication.
-    if ( matrixDimension < numThreads ) {
-        for (int i = 0; i < matrixDimension; i++) // row
+    if ( length < numThreads ) {
+        for (int i = 0; i < length; i++) // row
         {
             *(B + i) = 0.0;
             for (int j = 0; j < length; j++) // col
@@ -83,9 +83,9 @@ void mvv_( int *threads, int *len, double *A, double *B, double *MA ){
 
         // Here we detemine the number of rows over which each thread will work
         for (int i=0; i<numThreads; i++ ){
-            *(numberOfRows+i) = matrixDimension / numThreads;
+            *(numberOfRows+i) = length / numThreads;
         }
-        for (int i=0; i< matrixDimension % numThreads; i++ ){
+        for (int i=0; i< length % numThreads; i++ ){
             *(numberOfRows+i) = *(numberOfRows+i) + 1;
         }
 
@@ -98,14 +98,14 @@ void mvv_( int *threads, int *len, double *A, double *B, double *MA ){
                 startRow=stopRow;
                 stopRow=startRow+*(numberOfRows+i);
                 thread_args = ( struct args * )  malloc(sizeof( struct args));
-                thread_args->N   = matrixDimension;
+                thread_args->N   = length;
                 thread_args->startRow = startRow;
                 thread_args->stopRow = stopRow; 
                 thread_args->Aptr = A;
                 thread_args->Bptr = B;
                 thread_args->MAptr = MA;
 
-                pthread_create( thread_id+i, NULL, &mmm_thread_worker, thread_args );
+                pthread_create( thread_id+i, NULL, &mvv_thread_worker, thread_args );
             }
         }
         for(int i=0; i < numThreads ; i++) {
@@ -144,7 +144,7 @@ void *mvv_thread_worker( struct args *thread_args  ) {
     // Process the rows for which this thread is responsible
     for (i = rowStart; i < rowStop; i++) // row
     {
-        *(vb + i) = 0.0;
+        *(B + i) = 0.0;
         for (j = 0; j < N; j++) // col
         {
             *(B + i) = *(B + i) + ( *(A + j) * *(MA + (N * i) + j) );

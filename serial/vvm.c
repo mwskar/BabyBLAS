@@ -17,7 +17,7 @@ void  vvm_( int *nthreads, int *len, double *va, double *vb, double *ma){
 #ifdef STRIDE8
 
 	const int stride = 8;
-	const int mod = *(len) % stride;
+	const int mod = length % stride;
 
 	for (i=0<length;i++)
 	{
@@ -41,9 +41,9 @@ void  vvm_( int *nthreads, int *len, double *va, double *vb, double *ma){
 #elif STRIDE4
 
 	const int stride = 4;
-	const int mod = *(len) % stride;
+	const int mod = length % stride;
 
-	for (i=0<length;i++)
+	for (i=0; i<length;i++)
 	{
 		for(j=0;j<mod;j++)
 		{

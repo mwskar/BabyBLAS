@@ -18,7 +18,7 @@ void mmm_( int *threads, int *len,  double *a, double *b, double *c ){
     int veclen = *len;
     int mod;
 
-#ifdef STRIP8
+#ifdef STRIDE8
     const int stride = 8;
 
     mod = veclen % stride;
@@ -41,7 +41,7 @@ void mmm_( int *threads, int *len,  double *a, double *b, double *c ){
             }
         }
     }
-#elif STRIP4
+#elif STRIDE4
 const int stride = 4;
 
 mod = veclen % stride;

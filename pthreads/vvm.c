@@ -43,7 +43,7 @@ void vvm_( int *threads, int *len, double *A, double *B, double *C ){
     // This function has to break up the data, spawn the processes, gather the results, and 
     // clean up after itself.
 
-
+    int i,j;
     int numThreads = *threads;
     int matrixDimension = *len;
     int *numberOfRows;

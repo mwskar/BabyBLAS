@@ -1,7 +1,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    void mvv_( int *threads, int *len,  double *a, double *b, double*c );
+    void mvv_( int *threads, int *len,  double *a, double *b, double*ma );
 #ifdef __cplusplus
     }
 #endif
@@ -14,23 +14,24 @@ void mvv_( int *threads, int *len,  double *a, double *b, double *ma ){
 
     int i, j;
     int veclen = *len;
+    int sharelen = veclen;
 
 // Set the number of threads to use here
 
     omp_set_num_threads(*threads);
 
-#pragma omp parallel shared(veclen) private(i,j)
-{
-    for (int i = 0; i < veclen; i++) // row
+#pragma omp parallel for shared(sharelen) private(i,j, veclen)
+
+    for (int i = 0; i < sharelen; i++) // row
     {
-        *(bv + i) = 0.0;
+        *(b + i) = 0.0;
         for (int j = 0; j < veclen; j++) // col
         {
-            *(vb + i) = *(vb + i) + ( *(va + j) * *(ma + (length * i) + j) );
+            *(b + i) = *(b + i) + ( *(a + j) * *(ma + (veclen * i) + j) );
         }
 
     }
-}
+
 }
 
 
