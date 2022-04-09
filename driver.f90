@@ -10,7 +10,7 @@ real (kind=8) :: walltime
 real (kind=8) :: cputime 
 external walltime, cputime
 
-character (len=8) :: carg1, carg2
+character (len=8) :: carg1, carg2, carg3
 
 real (kind=8), dimension(:), allocatable :: veca, vecb
 real (kind=8), dimension(:,:), allocatable :: matrixa, matrixb, matrixc
@@ -24,11 +24,13 @@ double precision :: dot
 
 call get_command_argument(1, carg1)
 call get_command_argument(2, carg2)
+call get_command_argument(3, carg3)
 
 ! Use Fortran internal files to convert command line arguments to ints
 
 read (carg1,'(i8)') problem_size
 read (carg2,'(i8)') nthreads 
+
 
 
 
@@ -50,7 +52,7 @@ end do
 
 
 
-#ifdef DOT
+if (carg3 == "DOT") then
 
 
 wall_start = walltime()
@@ -64,7 +66,7 @@ print *, "Trace: ", trace, " mflops: ", mflops
 
 
 
-#elif VVM
+else if (carg3 == "VVM") then
 
 allocate(matrixc(problem_size,problem_size))
 matrixc = 0.0D0
@@ -87,7 +89,7 @@ deallocate(matrixc)
 
 
 
-#elif MVV
+else if ( carg3 == "MVV") then
 
 allocate(matrixc(problem_size,problem_size))
 matrixc = 0.0D0
@@ -103,12 +105,13 @@ do i=1, problem_size
   trace = trace + vecb(i)
 end do
 
+mflops = (2.0D0 * dble(problem_size)**2 ) / ( (wall_end-wall_start) * 1.0e6)
+
 print *, "Trace: ", trace, " mflops: ", mflops
 
 deallocate(matrixc)
 
-
-#elif MMM
+else if (carg3 == "MMM") then
 
 
 allocate(matrixa(problem_size, problem_size))
@@ -142,7 +145,7 @@ deallocate(matrixa)
 deallocate(matrixb)
 deallocate(matrixc)
 
-#endif
+end if
 
 
 deallocate(veca)
