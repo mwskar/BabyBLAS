@@ -20,8 +20,8 @@ void mmm_( int *threads, int *len,  double *a, double *b, double *c ){
 
     omp_set_num_threads(*threads);
 
-#pragma omp parallel for shared(sharelen) private(i,j,k, veclen)
-    for (i=0; i<sharelen; i++) {
+#pragma omp parallel for shared(veclen) private(i,j,k)
+    for (i=0; i<veclen; i++) {
         for (j=0; j<veclen; j++) {
             *(c+(i*veclen+j)) = 0.0;
             for (k=0;k<veclen;k++){

@@ -20,9 +20,8 @@ void vvm_( int *threads, int *len,  double *a, double *b, double *ma ){
 
     omp_set_num_threads(*threads);
 
-#pragma omp parallel for shared(sharelen) private(i,j, veclen)
-
-	for (i=0; i<sharelen; i++) {
+#pragma omp parallel for shared(veclen) private(i,j)
+	for (i=0; i<veclen; i++) {
 		for (j=0; j<veclen; j++) {
 			*(ma+(veclen*i)+j) = *(a+i) * *(b+j);
 		}

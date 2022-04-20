@@ -3,14 +3,9 @@
 F90 = gfortran
 CC  = gcc
 FFLAGS = -cpp -O2
-CFLAGS = -Ofast
+CFLAGS = -O2
 OPM = -fopenmp
-MYLIBS = -L./serial -lserial_bblas 
+MYLIBS = -L./openmp -lopenmp_bblas -L./pthreads -lpthreads_bblas -L./serial -lserial_bblas
 SYSLIBS = -lgomp -lpthread
 LBSTIME = -L./lbstime -llbstime
-
-TEST = -DDOT
-DOT = 
-MVV =  
-VVM = 
-MMM = 
+SOLVECHOICE = -DDIAGDOM

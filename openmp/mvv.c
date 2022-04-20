@@ -20,8 +20,7 @@ void mvv_( int *threads, int *len,  double *a, double *b, double *ma ){
 
     omp_set_num_threads(*threads);
 
-#pragma omp parallel for shared(sharelen) private(i,j, veclen)
-
+#pragma omp parallel for shared(veclen) private(i,j)
     for (int i = 0; i < sharelen; i++) // row
     {
         *(b + i) = 0.0;

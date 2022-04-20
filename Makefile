@@ -2,13 +2,19 @@
 #
 include Makefile.inc
 
-all : driver serial pthreads openmp lbstime 
+all : serial pthreads openmp lbstime driver solvedriver
 
-driver: serial lbstime pthreads openmp driver.o 
+driver: lbstime serial pthreads openmp driver.o 
 	$(F90) driver.o -o driver $(MYLIBS) $(LBSTIME) $(SYSLIBS)  
 
 driver.o: driver.f90
-	$(F90) $(FFLAGS) $(TEST) driver.f90 -c  
+	$(F90) $(FFLAGS) driver.f90 -c  
+
+solvedriver: lbstime serial pthreads openmp solvedriver.o
+	$(F90) solvedriver.o -o solvedriver $(SOLVECHOICE) $(MYLIBS) $(LBSTIME) $(SYSLIBS)
+
+solvedriver.o: solvedriver.f90
+	$(F90) $(FFLAGS) $(SOLVECHOICE) solvedriver.f90 -c
 
 serial: 
 	cd serial && $(MAKE)
